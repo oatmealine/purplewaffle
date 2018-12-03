@@ -58,7 +58,7 @@ var requiredConfVariables = ["token", "commandsFolder"];
 var requiredCmdMetaVars = ["permissions", "event", "description"]
 
 //check for all variables in config
-console.log(`${chalk.red.yellow('[D]')} checking for variables in config file\n`);
+console.log(`${chalk.red.yellow.bold('[D]')} checking for variables in config file\n`);
 requiredConfVariables.forEach((argum) => {
     if (!Object.keys(Config).includes(argum)) {
         process.emitWarning(argum + " variable isn't defined in config file, purplewaffle may fail")
@@ -66,25 +66,25 @@ requiredConfVariables.forEach((argum) => {
 });
 
 //loading in commands
-console.log(`${chalk.red.yellow('[D]')} grabbing all commands`);
-console.log(`${chalk.red.yellow('[D]')} commands folder: ${Config.commandsFolder}\n`);
+console.log(`${chalk.red.yellow.bold('[D]')} grabbing all commands`);
+console.log(`${chalk.red.yellow.bold('[D]')} commands folder: ${Config.commandsFolder}\n`);
 
 fs.readdirSync(Config.commandsFolder).forEach((file) => {
     if (file.endsWith(".js")) {
         commandsArray.push(file.replace(".js", ""));
-        console.debug(`${chalk.cyan('[V]')} ${chalk.magenta('[code]')} ${file}`);
+        console.debug(`${chalk.cyan.bold('[V]')} ${chalk.magenta('[code]')} ${file}`);
     } else if (file.endsWith(".meta.json")) {
-        console.debug(`${chalk.cyan('[V]')} ${chalk.magenta('[meta]')} ${file}`);
+        console.debug(`${chalk.cyan.bold('[V]')} ${chalk.magenta('[meta]')} ${file}`);
     };
     cmddirFiles.push(file);
 });
 
 //time to process commands
-console.log(`\n${chalk.red.yellow('[D]')} processing all commands\n`);
+console.log(`\n${chalk.red.yellow.bold('[D]')} processing all commands\n`);
 
 for (indx in commandsArray) {
     var cmd = commandsArray[indx];
-    console.log(`${chalk.red.yellow('[D]')} processing: ${cmd}`);
+    console.log(`${chalk.red.yellow.bold('[D]')} processing: ${cmd}`);
     commands[cmd] = {};
 
     if (!cmddirFiles.includes(cmd + ".meta.json")) {
@@ -105,9 +105,9 @@ for (indx in commandsArray) {
         }
     }
 
-    console.log(`${chalk.red.yellow('[D]')} done`);
+    console.log(`${chalk.red.yellow.bold('[D]')} done`);
 }
 
-console.log(`\n${chalk.red.yellow('[D]')} all commands are done processing`)
+console.log(`\n${chalk.red.yellow.bold('[D]')} all commands are done processing`)
 
 //bot.login(Config.token); //login and hope nothing explodes
