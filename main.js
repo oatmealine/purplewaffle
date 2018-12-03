@@ -30,7 +30,7 @@ if (2 + 2 !== 4) {
 }
 
 //load config
-console.log(`loading in config...`);
+console.log(`loading in config`);
 var Config = require("./config.json");
 
 console.log(`loading in all required modules\n`);
