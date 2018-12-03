@@ -17,8 +17,11 @@ switch (version.symbol) {
         verSymbol = " ";
 }
 
-console.clear()
-console.log(`purplewaffle v${version.ver.join(".")}${verSymbol}\n`);
+console.log(`\n${'\x1b[35m'}purplewaffle ${'\x1b[37m'}v${version.ver.join(".")}${verSymbol}\n`); 
+//the weird-ass number-letter combinations are escape characters for colors.
+//ive highlighted them in ${} as theyre much harder to tell apart from the real text without chalk being loaded in yet
+//also, pretty funny how in the vscode terminal, these color escape sequences for colors work, but chalk doesnt
+//fix your vscode support chalk
 
 //reality check
 if (2 + 2 !== 4) {
@@ -27,10 +30,10 @@ if (2 + 2 !== 4) {
 }
 
 //load config
-console.log("[D] loading in config...");
+console.log(`loading in config...`);
 var Config = require("./config.json");
 
-console.log("[D] loading in all required modules\n");
+console.log(`loading in all required modules\n`);
 var Discord = require("discord.js"); //discordjs
 const chalk = require("chalk");
 const fs = require("fs"); //filesystem module
@@ -55,7 +58,7 @@ var requiredConfVariables = ["token", "commandsFolder"];
 var requiredCmdMetaVars = ["permissions", "event", "description"]
 
 //check for all variables in config
-console.log("[D] checking for variables in config file\n");
+console.log(`${chalk.red.yellow('[D]')} checking for variables in config file\n`);
 requiredConfVariables.forEach((argum) => {
     if (!Object.keys(Config).includes(argum)) {
         process.emitWarning(argum + " variable isn't defined in config file, purplewaffle may fail")
@@ -63,25 +66,25 @@ requiredConfVariables.forEach((argum) => {
 });
 
 //loading in commands
-console.log("[D] grabbing all commands");
-console.log("[D] commands folder: " + Config.commandsFolder + "\n");
+console.log(`${chalk.red.yellow('[D]')} grabbing all commands`);
+console.log(`${chalk.red.yellow('[D]')} commands folder: ${Config.commandsFolder}\n`);
 
 fs.readdirSync(Config.commandsFolder).forEach((file) => {
     if (file.endsWith(".js")) {
         commandsArray.push(file.replace(".js", ""));
-        console.debug("[V] [code] " + file);
+        console.debug(`${chalk.cyan('[V]')} ${chalk.magenta('[code]')} ${file}`);
     } else if (file.endsWith(".meta.json")) {
-        console.debug("[V] [meta] " + file);
+        console.debug(`${chalk.cyan('[V]')} ${chalk.magenta('[meta]')} ${file}`);
     };
     cmddirFiles.push(file);
 });
 
 //time to load all in
-console.log("\n[D] loading all commands");
+console.log(`\n${chalk.red.yellow('[D]')} loading all commands\n`);
 
 for (indx in commandsArray) {
     var cmd = commandsArray[indx];
-    console.log("\n[D] loading in: " + cmd);
+    console.log(`${chalk.red.yellow('[D]')} loading in: ${cmd}`);
     commands[cmd] = {};
 
     if (!cmddirFiles.includes(cmd + ".meta.json")) {
@@ -102,7 +105,7 @@ for (indx in commandsArray) {
         }
     }
 
-    console.log("[D] done");
+    console.log(`${chalk.red.yellow('[D]')} done`);
 }
 
 
