@@ -79,12 +79,12 @@ fs.readdirSync(Config.commandsFolder).forEach((file) => {
     cmddirFiles.push(file);
 });
 
-//time to load all in
-console.log(`\n${chalk.red.yellow('[D]')} loading all commands\n`);
+//time to process commands
+console.log(`\n${chalk.red.yellow('[D]')} processing all commands\n`);
 
 for (indx in commandsArray) {
     var cmd = commandsArray[indx];
-    console.log(`${chalk.red.yellow('[D]')} loading in: ${cmd}`);
+    console.log(`${chalk.red.yellow('[D]')} processing: ${cmd}`);
     commands[cmd] = {};
 
     if (!cmddirFiles.includes(cmd + ".meta.json")) {
@@ -108,6 +108,7 @@ for (indx in commandsArray) {
     console.log(`${chalk.red.yellow('[D]')} done`);
 }
 
+console.log(`\n${chalk.red.yellow('[D]')} all commands are done processing`)
 
 
 //bot.login(Config.token); //login and hope nothing explodes
