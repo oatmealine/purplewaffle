@@ -1,0 +1,34 @@
+{
+  "name": "purplewaffle",
+  "version": "0.0.0",
+  "description": "a discord.js command system, aiming for flexibility and simplicity",
+  "main": "main.js",
+  "dependencies": {
+    "discord.js": "^11.4.2",
+    "chalk": "^2.4.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"why do you even need to test this\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thefoxbot/purplewaffle.git"
+  },
+  "keywords": [
+    "node",
+    "nodejs",
+    "discordjs",
+    "djs",
+    "discord.js",
+    "purplewaffle",
+    "commandmanager",
+    "commandsystem"
+  ],
+  "author": "thefox",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/thefoxbot/purplewaffle/issues"
+  },
+  "homepage": "https://github.com/thefoxbot/purplewaffle#readme"
+}
