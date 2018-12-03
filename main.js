@@ -17,7 +17,7 @@ switch (version.symbol) {
         verSymbol = " ";
 }
 
-console.log(`\n${'\x1b[35m'}purplewaffle ${'\x1b[37m'}v${version.ver.join(".")}${verSymbol}\n`); 
+console.log(`\n${'\x1b[35m'}purplewaffle ${'\x1b[37m'}v${version.ver.join(".")}${verSymbol}${'\x1b[0m'}\n`); 
 //the weird-ass number-letter combinations are escape characters for colors.
 //ive highlighted them in ${} as theyre much harder to tell apart from the real text without chalk being loaded in yet
 //also, pretty funny how in the vscode terminal, these color escape sequences for colors work, but chalk doesnt
