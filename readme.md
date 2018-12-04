@@ -4,7 +4,7 @@ purplewaffle is a discord.js command system, aiming for flexibility and simplici
 
 i don't recommend using purplewaffle in it's current state, as it's heavily WIP
 
-# how to use
+## how to use
 
 you dont need to change anything other than files in the script directory and the config.json file. (the config.json file is required to run the bot, and there's an example in config.example.json)
 
