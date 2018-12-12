@@ -1,0 +1,4 @@
+{
+    "event": "ready",
+    "description": "change the presence of the bot on start"
+}

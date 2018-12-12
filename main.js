@@ -1,5 +1,5 @@
 //version
-var version = { ver: [0, 1, 0], symbol: "alpha" };
+var version = { ver: [0, 2, 0], symbol: "alpha" };
 
 //this is mainly just for fanciness lol
 var verSymbol;
@@ -125,8 +125,10 @@ for (indx in commandNamesArray) {
             commands[cmd].meta = require(Config.commandsFolder + "/" + cmd + ".meta.json");
             requiredCmdMetaVars.forEach((argum) => {
                 if (!Object.keys(commands[cmd].meta).includes(argum)) {
-                    logWarning(argum + " variable isn't defined in metadata file, replacing with default value");
-                    commands[cmd].meta[argum] = defaultCmdMeta[argum];
+                    if(!(argum === "permissions" && commands[cmd].meta.event !== "message")) {
+                        logWarning(argum + " variable isn't defined in metadata file, replacing with default value");
+                        commands[cmd].meta[argum] = defaultCmdMeta[argum];
+                    }
                 }
             });
         } catch (err) {
@@ -211,6 +213,23 @@ bot.on("message", (message) => {
 
 logInfo(`creating: onready`);
 bot.on('ready', () => {
+    logSuccess(`logged in!`)
+    logInfo(`running onready tasks...`)
+    events.ready.forEach((cmdName) => {
+        var cmd = commands[cmdName]
+        logInfo(`running ${chalk.bold(cmdName)}`)
+        try {
+            fs.readFile(Config.commandsFolder+'/'+cmdName+'.js', 'utf8', (err, data) => {
+                if (!err) {
+                    eval(data)
+                } else {
+                    logError(`${chalk.bold(cmdName)}: error while reading file: ${chalk.red(err)}`);
+                }
+            })
+        } catch (err) {
+            logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`)
+        }
+    })
     logSuccess(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join(".")}${verSymbol}`)}`);
 })
 
