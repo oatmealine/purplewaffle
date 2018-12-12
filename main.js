@@ -107,7 +107,7 @@ fs.readdirSync(Config.commandsFolder).forEach((file) => {
     cmddirFiles.push(file);
 });
 
-logSuccess(`done`)
+logSuccess(`done`);
 
 //time to process commands
 logInfo(`processing all commands`, true);
@@ -151,7 +151,7 @@ Object.keys(commands).forEach((cmdName) => {
     }
     events[cmd.meta.event].push(cmdName);
 });
-logSuccess(`required events: ${Object.keys(events).join(", ")}`)
+logSuccess(`required events: ${Object.keys(events).join(", ")}`);
 
 //create all event listeners
 logInfo(`creating listeners`, true);
@@ -192,20 +192,20 @@ bot.on("message", (message) => {
                     try {
                         fs.readFile(Config.commandsFolder+'/'+cmdName+'.js', 'utf8', (err, data) => {
                             if (!err) {
-                                eval(data)
+                                eval(data);
                             } else {
-                                message.channel.send(`Error while reading ${cmdName}: \`${err}\``)
+                                message.channel.send(`Error while reading ${cmdName}: \`${err}\``);
                                 logError(`${chalk.bold(cmdName)}: error while reading file: ${chalk.red(err)}`);
                             }
                         })
                     } catch (err) {
-                        message.channel.send(`Runtime error in command ${cmdName}: \`${err}\``)
+                        message.channel.send(`Runtime error in command ${cmdName}: \`${err}\``);
                         logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
                     }
                 } else {
                     logVerbose(`${chalk.bold(cmdName)}: permissions don't match, aborting command`);
                 }
-                logInfo(`${chalk.bold(cmdName)}: processed`)
+                logInfo(`${chalk.bold(cmdName)}: processed`);
             }
         });
     }
@@ -213,21 +213,21 @@ bot.on("message", (message) => {
 
 logInfo(`creating: onready`);
 bot.on('ready', () => {
-    logSuccess(`logged in!`)
-    logInfo(`running onready tasks...`)
+    logSuccess(`logged in!`);
+    logInfo(`running onready tasks...`);
     events.ready.forEach((cmdName) => {
-        var cmd = commands[cmdName]
-        logInfo(`running ${chalk.bold(cmdName)}`)
+        var cmd = commands[cmdName];
+        logInfo(`running ${chalk.bold(cmdName)}`);
         try {
             fs.readFile(Config.commandsFolder+'/'+cmdName+'.js', 'utf8', (err, data) => {
                 if (!err) {
-                    eval(data)
+                    eval(data);
                 } else {
                     logError(`${chalk.bold(cmdName)}: error while reading file: ${chalk.red(err)}`);
                 }
             })
         } catch (err) {
-            logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`)
+            logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
         }
     })
     logSuccess(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join(".")}${verSymbol}`)}`);

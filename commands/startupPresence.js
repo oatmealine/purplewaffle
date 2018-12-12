@@ -13,4 +13,4 @@ function changePresence() {
 }
 
 setInterval(changePresence, 10000);
-changePresence()
+changePresence();

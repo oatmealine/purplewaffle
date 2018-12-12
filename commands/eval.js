@@ -1,5 +1,5 @@
 try {
-    var code = message.content.replace(Config.prefix + cmdName, "")
+    var code = message.content.replace(Config.prefix + cmdName, "");
     var evaled = eval(code);
 
     if (typeof evaled !== "string")
@@ -22,7 +22,7 @@ try {
     }
 
     message.channel.send("", { embed });
-    message.react("☑")
+    message.react("☑");
 } catch (err) {
     message.channel.send(`:warning: \`ERROR\` \`\`\`xl\n${err}\n\`\`\``);
 };
