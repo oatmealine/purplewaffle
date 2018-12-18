@@ -2,7 +2,9 @@
 
 var resultMsg = "";
 Object.keys(commands).forEach((cmd) => {
-    resultMsg = resultMsg + `\n${cmd} - ${commands[cmd].meta.description}`;
+	if(commands[cmd].meta.event === "message") {
+		resultMsg = resultMsg + `\n${cmd} - ${commands[cmd].meta.description}`;
+	}
 });
 
 message.channel.send(resultMsg);
