@@ -1,0 +1,8 @@
+{
+    "permissions": {
+        "whitelist": false,
+        "list": []
+    },
+    "event": "message",
+    "description": "get the current ping"
+}
