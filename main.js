@@ -216,7 +216,7 @@ if(events.message !== undefined) {
 logInfo(`creating: onready`);
 bot.on('ready', () => {
     logSuccess(`logged in!`);
-    if (Config.ownerid == undefined) {
+    if (Config.ownerid == undefined || Config.ownerid == "") {
 	logInfo('ownerid not defined on config.json, getting from application owner')
     	bot.fetchApplication().then(app => {
             Config.ownerid = app.owner.id;
