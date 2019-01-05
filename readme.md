@@ -18,7 +18,7 @@ you can include the --v (or --verbose) parameter to see all verbose logs. if you
 {
     "token": "", //the token for the bot
     "commandsFolder": "./commands", //the folder in which all the commands/scripts are stored in
-    "ownerid": "", //your id, will be used for the OWNER permission
+    "ownerid": "", //your id, will be used for the OWNER permission (leave blank for autodetect via application)
     "prefix": "" //the prefix for the bot, ex. "pw-"
 }
 ```
