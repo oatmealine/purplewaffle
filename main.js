@@ -156,61 +156,61 @@ logSuccess(`required events: ${Object.keys(events).join(", ")}`);
 //create all event listeners
 logInfo(`creating listeners`, true);
 
-logInfo(`creating: onmessage`);
 if(events.message !== undefined) {
-	bot.on("message", (message) => {
-		if(message.content.startsWith(Config.prefix)) {
-			events.message.forEach((cmdName) => {
-				var cmd = commands[cmdName];
-				if (message.content.startsWith(Config.prefix + cmdName)) {
-					var args = message.content.split(" "); //in '.say hi, how are you' it would be ['.say', 'hi,', 'how', 'are', 'you']
-					let allowRun = true;
-					logInfo(`got command ${chalk.bold(cmdName)}, processing`, true);
-					logVerbose(`${chalk.bold(cmdName)}: verifying permissions`);
-					try {
-						if (cmd.meta.permissions.whitelist) {
-							if (cmd.meta.permissions.list.includes("OWNER")) {
-								if (Config.ownerid === message.author.id) {
-									allowRun = true;
-								} else {
-									throw new Error("Command is bot owner-only");
-								}
-							} else {
-								if (message.member.hasPermissions(cmd.meta.permissions.list)) {
-									allowRun = true;
-								} else {
-									throw new Error("Invalid permissions (required: " + cmd.meta.permissions.list.join(", ") + ")");
-								}
-							}
-						}
-					} catch (err) {
-						message.channel.send(`Permission error: \`${err}\` `);
-						allowRun = false;
-					}
-					
-					if(allowRun) {
-						logVerbose(`${chalk.bold(cmdName)}: permissions match, executing command`);
-						try {
-							fs.readFile(Config.commandsFolder+'/'+cmdName+'.js', 'utf8', (err, data) => {
-								if (!err) {
-									eval(data);
-								} else {
-									message.channel.send(`Error while reading ${cmdName}: \`${err}\``);
-									logError(`${chalk.bold(cmdName)}: error while reading file: ${chalk.red(err)}`);
-								}
-							})
-						} catch (err) {
-							message.channel.send(`Runtime error in command ${cmdName}: \`${err}\``);
-							logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
-						}
-					} else {
-						logVerbose(`${chalk.bold(cmdName)}: permissions don't match, aborting command`);
-					}
-					logInfo(`${chalk.bold(cmdName)}: processed`);
-				}
-			});
-		}
-	});
+    logInfo(`creating: onmessage`);
+    bot.on("message", (message) => {
+        if(message.content.startsWith(Config.prefix)) {
+            events.message.forEach((cmdName) => {
+                var cmd = commands[cmdName];
+                if (message.content.startsWith(Config.prefix + cmdName)) {
+                    var args = message.content.split(" "); //in '.say hi, how are you' it would be ['.say', 'hi,', 'how', 'are', 'you']
+                    let allowRun = true;
+                    logInfo(`got command ${chalk.bold(cmdName)}, processing`, true);
+                    logVerbose(`${chalk.bold(cmdName)}: verifying permissions`);
+                    try {
+                        if (cmd.meta.permissions.whitelist) {
+                            if (cmd.meta.permissions.list.includes("OWNER")) {
+                                if (Config.ownerid === message.author.id) {
+                                    allowRun = true;
+                                } else {
+                                    throw new Error("Command is bot owner-only");
+                                }
+                            } else {
+                                if (message.member.hasPermissions(cmd.meta.permissions.list)) {
+                                    allowRun = true;
+                                } else {
+                                    throw new Error("Invalid permissions (required: " + cmd.meta.permissions.list.join(", ") + ")");
+                                }
+                            }
+                        }
+                    } catch (err) {
+                        message.channel.send(`Permission error: \`${err}\` `);
+                        allowRun = false;
+                    }
+
+                    if(allowRun) {
+                        logVerbose(`${chalk.bold(cmdName)}: permissions match, executing command`);
+                        try {
+                            fs.readFile(Config.commandsFolder+'/'+cmdName+'.js', 'utf8', (err, data) => {
+                                if (!err) {
+                                    eval(data);
+                                } else {
+                                    message.channel.send(`Error while reading ${cmdName}: \`${err}\``);
+                                    logError(`${chalk.bold(cmdName)}: error while reading file: ${chalk.red(err)}`);
+                                }
+                            })
+                        } catch (err) {
+                            message.channel.send(`Runtime error in command ${cmdName}: \`${err}\``);
+                            logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
+                        }
+                    } else {
+                        logVerbose(`${chalk.bold(cmdName)}: permissions don't match, aborting command`);
+                    }
+                    logInfo(`${chalk.bold(cmdName)}: processed`);
+                }
+            });
+        }
+    });
 }
 
 logInfo(`creating: onready`);
