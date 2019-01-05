@@ -234,6 +234,14 @@ bot.on('ready', () => {
             }
         })
     }
+
+    if (Config.ownerid == undefined) {
+        bot.fetchApplication().then(app => {
+            logInfo('ownerid not defined on config.json, getting from application owner')
+            Config.ownerid = app.owner.id;
+        })
+    }
+
     logSuccess(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join(".")}${verSymbol}`)}`);
 })
 
