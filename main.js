@@ -236,8 +236,8 @@ bot.on('ready', () => {
     }
 
     if (Config.ownerid == undefined) {
+	logInfo('ownerid not defined on config.json, getting from application owner')
         bot.fetchApplication().then(app => {
-            logInfo('ownerid not defined on config.json, getting from application owner')
             Config.ownerid = app.owner.id;
         })
     }
