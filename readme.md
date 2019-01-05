@@ -39,7 +39,7 @@ you can use any other value defined in main.js, too (example in help.js)
 
 ### script metadata values
 
-```json
+```js
 {
     "permissions": {
         "whitelist": false, //whether you want the command to be only executable by permissions in the list below
