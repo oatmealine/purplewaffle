@@ -14,7 +14,7 @@ you can include the --v (or --verbose) parameter to see all verbose logs. if you
 
 ### config.json values
 
-```json
+```js
 {
     "token": "", //the token for the bot
     "commandsFolder": "./commands", //the folder in which all the commands/scripts are stored in
