@@ -54,7 +54,7 @@ var defaultCmdMeta = {
     "description": "No description provided"
 }
 
-var requiredConfVariables = ["token", "commandsFolder", "ownerid", "prefix"];
+var requiredConfVariables = ["token", "commandsFolder", "prefix"];
 var requiredCmdMetaVars = ["permissions", "event", "description"];
 
 var events = {};
