@@ -216,6 +216,12 @@ if(events.message !== undefined) {
 logInfo(`creating: onready`);
 bot.on('ready', () => {
     logSuccess(`logged in!`);
+     if (Config.ownerid == undefined) {
+	logInfo('ownerid not defined on config.json, getting from application owner')
+    	bot.fetchApplication().then(app => {
+        	Config.ownerid = app.owner.id;
+        })
+    }
     if(events.ready !== undefined) {
         logInfo(`running onready tasks...`);
         events.ready.forEach((cmdName) => {
@@ -232,13 +238,6 @@ bot.on('ready', () => {
             } catch (err) {
                 logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
             }
-        })
-    }
-
-    if (Config.ownerid == undefined) {
-	logInfo('ownerid not defined on config.json, getting from application owner')
-        bot.fetchApplication().then(app => {
-            Config.ownerid = app.owner.id;
         })
     }
 
