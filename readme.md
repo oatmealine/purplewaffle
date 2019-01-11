@@ -49,8 +49,10 @@ you can use any other value defined in main.js, too (example in help.js)
     "description": "evaluate a piece of code" //the description (used in help.js)
 }
 ```
-##credits
+## credits
+
 [mat](https://github.com/matcool) for [owner id autodetect](https://github.com/thefoxbot/purplewaffle/commit/5eaa6e6da12ec0e9e09343d22de2810dfacbb591)
+
 [leo60228](https://github.com/leo60228) for [patchEmitter()](https://github.com/thefoxbot/purplewaffle/commit/ca25addef908e3602cc5ce4c48969eb980b232ca#diff-7a9076d6d94e62c13d641aa71f19ae8eR158)
 
 purplew*α*ffle
