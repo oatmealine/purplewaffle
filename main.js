@@ -113,34 +113,37 @@ logSuccess(`done`);
 //time to process commands
 logInfo(`processing all commands`, true);
 
-for (indx in commandNamesArray) {
-    var cmd = commandNamesArray[indx];
-    logVerbose(`processing: ${cmd}`);
-    commands[cmd] = {};
-    commands[cmd].module = require(Config.commandsFolder + "/" + cmd + ".js");
+function processCommands() {
+    for (indx in commandNamesArray) {
+        var cmd = commandNamesArray[indx];
+        logVerbose(`processing: ${cmd}`);
+        commands[cmd] = {};
+        commands[cmd].module = require(Config.commandsFolder + "/" + cmd + ".js");
 
-    if (!cmddirFiles.includes(cmd + ".meta.json")) {
-        logWarning(cmd + " does not have a meta file, using default one");
-        commands[cmd].meta = defaultCmdMeta;
-    } else {
-        try {
-            commands[cmd].meta = require(Config.commandsFolder + "/" + cmd + ".meta.json");
-            requiredCmdMetaVars.forEach((argum) => {
-                if (!Object.keys(commands[cmd].meta).includes(argum)) {
-                    if(!(argum === "permissions" && commands[cmd].meta.event !== "message")) {
-                        logWarning(argum + " variable isn't defined in metadata file, replacing with default value");
-                        commands[cmd].meta[argum] = defaultCmdMeta[argum];
-                    }
-                }
-            });
-        } catch (err) {
-            logWarning(cmd + "'s meta file gave an error, replacing it with default metadata - " + err);
+        if (!cmddirFiles.includes(cmd + ".meta.json")) {
+            logWarning(cmd + " does not have a meta file, using default one");
             commands[cmd].meta = defaultCmdMeta;
+        } else {
+            try {
+                commands[cmd].meta = require(Config.commandsFolder + "/" + cmd + ".meta.json");
+                requiredCmdMetaVars.forEach((argum) => {
+                    if (!Object.keys(commands[cmd].meta).includes(argum)) {
+                        if(!(argum === "permissions" && commands[cmd].meta.event !== "message")) {
+                            logWarning(argum + " variable isn't defined in metadata file, replacing with default value");
+                            commands[cmd].meta[argum] = defaultCmdMeta[argum];
+                        }
+                    }
+                });
+            } catch (err) {
+                logWarning(cmd + "'s meta file gave an error, replacing it with default metadata - " + err);
+                commands[cmd].meta = defaultCmdMeta;
+            }
         }
-    }
 
-    logVerbose(`done`);
+        logVerbose(`done`);
+    }
 }
+processCommands()
 logSuccess(`all commands are done processing`);
 
 //events & loading em in
