@@ -124,6 +124,7 @@ for (indx in commandNamesArray) {
     } else {
         try {
             commands[cmd].meta = require(Config.commandsFolder + "/" + cmd + ".meta.json");
+            commands[cmd].module = require(Config.commandsFolder + "/" + cmd + ".js");
             requiredCmdMetaVars.forEach((argum) => {
                 if (!Object.keys(commands[cmd].meta).includes(argum)) {
                     if(!(argum === "permissions" && commands[cmd].meta.event !== "message")) {
@@ -208,7 +209,7 @@ bot.on('event', (event, ...eventargs) => {
                         if(allowRun) {
                             logVerbose(`${chalk.bold(cmdName)}: permissions match, executing command`);
                             try {
-                                require(Config.commandsFolder+'/'+cmdName)({args, message, commands, logInfo, logVerbose, bot, Config, cmdName, version, verSymbol});
+                                commands[cmdName].module({args, message, commands, logInfo, logVerbose, bot, Config, cmdName, version, verSymbol});
                             } catch (err) {
                                 message.channel.send(`Runtime error in command ${cmdName}: \`${err}\``);
                                 logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
@@ -236,7 +237,7 @@ bot.on('event', (event, ...eventargs) => {
             logInfo(`running tasks for ${event}`)
             events[event].forEach(cmdName => {
                 try {
-                    require(Config.commandsFolder+'/'+cmdName)({commands, logInfo, logVerbose, bot, Config, version, verSymbol});
+                    commands[cmdName].module({commands, logInfo, logVerbose, bot, Config, version, verSymbol});
                 } catch (err) {
                     logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
                 }
