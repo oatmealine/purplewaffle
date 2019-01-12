@@ -23,6 +23,12 @@ console.log(`\n${'\x1b[35m'}purplewaffle ${'\x1b[2m'}v${version.ver.join(".")}${
 //also, pretty funny how in the vscode terminal, these color escape sequences for colors work, but chalk doesnt
 //fix your vscode support chalk
 
+//reality check
+if (2 + 2 !== 4) {
+    throw new Error("reality check failed!! something must have fucked up badly");
+    process.exit(1);
+}
+
 //load config
 console.log(`loading in config`);
 var Config = require("./config.json");
