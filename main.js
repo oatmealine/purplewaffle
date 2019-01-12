@@ -23,12 +23,6 @@ console.log(`\n${'\x1b[35m'}purplewaffle ${'\x1b[2m'}v${version.ver.join(".")}${
 //also, pretty funny how in the vscode terminal, these color escape sequences for colors work, but chalk doesnt
 //fix your vscode support chalk
 
-//reality check
-if (2 + 2 !== 4) {
-    throw new Error("reality check failed!! something must have fucked up badly");
-    process.exit(1);
-}
-
 //load config
 console.log(`loading in config`);
 var Config = require("./config.json");
@@ -208,14 +202,7 @@ bot.on('event', (event, ...eventargs) => {
                         if(allowRun) {
                             logVerbose(`${chalk.bold(cmdName)}: permissions match, executing command`);
                             try {
-                                fs.readFile(Config.commandsFolder+'/'+cmdName+'.js', 'utf8', (err, data) => {
-                                    if (!err) {
-                                        eval(data);
-                                    } else {
-                                        message.channel.send(`Error while reading ${cmdName}: \`${err}\``);
-                                        logError(`${chalk.bold(cmdName)}: error while reading file: ${chalk.red(err)}`);
-                                    }
-                                })
+                                require(Config.commandsFolder+'/'+cmdName)({args, message, commands, logInfo, logVerbose, bot, Config, cmdName, version, verSymbol});
                             } catch (err) {
                                 message.channel.send(`Runtime error in command ${cmdName}: \`${err}\``);
                                 logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
@@ -243,13 +230,7 @@ bot.on('event', (event, ...eventargs) => {
             logInfo(`running tasks for ${event}`)
             events[event].forEach(cmdName => {
                 try {
-                    fs.readFile(Config.commandsFolder+'/'+cmdName+'.js', 'utf8', (err, data) => {
-                        if (!err) {
-                            eval(data);
-                        } else {
-                            logError(`${chalk.bold(cmdName)}: error while reading file: ${chalk.red(err)}`);
-                        }
-                    })
+                    require(Config.commandsFolder+'/'+cmdName)({commands, logInfo, logVerbose, bot, Config, version, verSymbol});
                 } catch (err) {
                     logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
                 }
