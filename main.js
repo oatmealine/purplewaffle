@@ -33,6 +33,15 @@ if (2 + 2 !== 4) {
 console.log(`loading in config`);
 var Config = require("./config.json");
 
+//localisation!!
+console.log("loading in localisation/dialog")
+try {
+    var dialog = require("./dialog.json")
+} catch(err) {
+    var dialog = {}
+    console.log("dialog file not found")
+}
+
 console.log(`loading in all required modules`);
 var Discord = require("discord.js"); //discordjs
 var util = require("util")
@@ -57,6 +66,14 @@ var defaultCmdMeta = {
 
 var requiredConfVariables = ["token", "commandsFolder", "prefix"];
 var requiredCmdMetaVars = ["permissions", "event", "description"];
+var dialogKeys = [
+    "msg_userNoPerms",
+    "msg_botNoPerms",
+    "msg_ownerOnly",
+    "msg_permError",
+    "msg_runtimeError",
+    "msg_loadError"
+]
 
 var events = {};
 
@@ -94,6 +111,16 @@ requiredConfVariables.forEach((argum) => {
     }
 });
 logSuccess(`done`)
+
+//checking dialog.json file
+logInfo(`verifying dialog file`, true)
+dialogKeys.forEach((key) => {
+    if (!Object.keys(dialog).includes(key)) {
+        logWarning(key + " variable isn't defined in dialog file, replacing with placeholder");
+        dialog[key] = "${"+key+"}"
+    }
+})
+
 //loading in commands
 logInfo(`grabbing all scripts`, true);
 logVerbose(`scripts folder: ${Config.commandsFolder}`);
@@ -194,18 +221,18 @@ bot.on('event', (event, ...eventargs) => {
                                     if (Config.ownerid === message.author.id) {
                                         allowRun = true;
                                     } else {
-                                        throw new Error("Command is bot owner-only");
+                                        throw new Error(dialog.msg_ownerOnly);
                                     }
                                 } else {
                                     if (message.member.hasPermissions(cmd.meta.permissions.list)) {
                                         allowRun = true;
                                     } else {
-                                        throw new Error("Invalid permissions (required: " + cmd.meta.permissions.list.join(", ") + ")");
+                                        throw new Error(dialog.msg_userNoPerms.replace("$1", cmd.meta.permissions.list.join(", ")));
                                     }
                                 }
                             }
                         } catch (err) {
-                            message.channel.send(`Permission error: \`${err}\` `);
+                            message.channel.send(dialog.msg_permError.replace("$1", err));
                             allowRun = false;
                         }
     
@@ -214,7 +241,7 @@ bot.on('event', (event, ...eventargs) => {
                             try {
                                 commands[cmdName].module({args, message, commands, logInfo, logVerbose, bot, Config, cmdName, version, verSymbol});
                             } catch (err) {
-                                message.channel.send(`Runtime error in command ${cmdName}: \`${err}\``);
+                                message.channel.send(dialog.msg_runtimeError.replace("$1", cmdName).replace("$2", err));
                                 logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
                             }
                         } else {
