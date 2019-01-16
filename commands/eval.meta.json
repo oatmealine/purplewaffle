@@ -3,6 +3,10 @@
         "whitelist": true,
         "list": ["OWNER"]
     },
+    "clientPermissions": {
+        "whitelist": false,
+        "list": ["SEND_MESSAGES", "EMBED_LINKS"]
+    },
     "event": "message",
     "description": "evaluate a piece of code"
 }

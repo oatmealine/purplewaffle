@@ -1,8 +1,4 @@
 {
-    "permissions": {
-        "whitelist": false,
-        "list": []
-    },
     "event": "guildCreate",
     "description": "log joined guilds"
 }

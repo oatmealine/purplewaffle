@@ -3,6 +3,10 @@
         "whitelist": false,
         "list": []
     },
+    "clientPermissions": {
+        "whitelist": false,
+        "list": ["SEND_MESSAGES"]
+    },
     "event": "message",
     "description": "get all available commands & their descriptions"
 }

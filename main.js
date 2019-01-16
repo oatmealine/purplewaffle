@@ -224,14 +224,20 @@ bot.on('event', (event, ...eventargs) => {
                                         throw new Error(dialog.msg_ownerOnly);
                                     }
                                 } else {
-                                    if (message.member.hasPermissions(cmd.meta.permissions.list)) {
+                                    if (message.member.hasPermission(cmd.meta.permissions.list)) {
                                         allowRun = true;
                                     } else {
                                         throw new Error(dialog.msg_userNoPerms.replace("$1", cmd.meta.permissions.list.join(", ")));
                                     }
                                 }
+                                if (message.channel.permissionsFor(bot.user.id).has(cmd.meta.clientPermissions.list)) {
+                                    allowRun = true;
+                                } else {
+                                    throw new Error(dialog.msg_botNoPerms.replace("$1", cmd.meta.clientPermissions.list.join(", ")));
+                                }
                             }
                         } catch (err) {
+                            logVerbose("permission error: "+err)
                             message.channel.send(dialog.msg_permError.replace("$1", err));
                             allowRun = false;
                         }
