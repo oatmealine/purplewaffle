@@ -3,6 +3,6 @@
     "msg_botNoPerms": "The client does not have permission to execute this command (required permissions: $1)",
     "msg_ownerOnly": "This command is owner only, and you are not the owner",
     "msg_permError": "Permission error: `$1`",
-    "msg_runtimeError": "Runtime error in command `$1`: `$2`",
+    "msg_runtimeError": "Runtime error in command `$1`: \n```\n$2\n```",
     "msg_loadError": "Loading error in command `$1`: `$2`"
 }

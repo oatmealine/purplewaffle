@@ -238,7 +238,7 @@ bot.on('event', (event, ...eventargs) => {
                             }
                         } catch (err) {
                             logVerbose("permission error: "+err)
-                            message.channel.send(dialog.msg_permError.replace("$1", err));
+                            message.channel.send(dialog.msg_permError.replace("$1", err.stack));
                             allowRun = false;
                         }
     
@@ -247,8 +247,8 @@ bot.on('event', (event, ...eventargs) => {
                             try {
                                 commands[cmdName].module({args, message, commands, logInfo, logVerbose, bot, Config, cmdName, version, verSymbol});
                             } catch (err) {
-                                message.channel.send(dialog.msg_runtimeError.replace("$1", cmdName).replace("$2", err));
-                                logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
+                                message.channel.send(dialog.msg_runtimeError.replace("$1", cmdName).replace("$2", err.stack));
+                                logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
                             }
                         } else {
                             logVerbose(`${chalk.bold(cmdName)}: permissions don't match, aborting command`);
@@ -275,7 +275,7 @@ bot.on('event', (event, ...eventargs) => {
                 try {
                     commands[cmdName].module({commands, logInfo, logVerbose, bot, Config, version, verSymbol});
                 } catch (err) {
-                    logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err)}`);
+                    logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
                 }
             })
             if(event === 'ready') {

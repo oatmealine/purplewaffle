@@ -25,6 +25,6 @@ module.exports = ({message, Config, cmdName}) => {
         message.channel.send("", { embed });
         message.react("☑");
     } catch (err) {
-        message.channel.send(`:warning: \`ERROR\` \`\`\`xl\n${err}\n\`\`\``);
+        message.channel.send(`:warning: \`ERROR\` \`\`\`xl\n${err.stack}\n\`\`\``);
     };
 };
