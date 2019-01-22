@@ -1,5 +1,5 @@
 //version
-var version = { ver: [0, 2, 0], symbol: "alpha" };
+var version = { ver: [0, 3, 0], symbol: "alpha" };
 
 //this is mainly just for fanciness lol
 var verSymbol;
