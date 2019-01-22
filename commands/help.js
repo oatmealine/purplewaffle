@@ -3,7 +3,7 @@
 module.exports = ({commands, message}) => {
   var resultMsg = "";
   Object.keys(commands).forEach((cmd) => {
-          if(commands[cmd].meta.event === "message") {
+          if(commands[cmd].meta.event === "message" && (commands[cmd].meta.hidden || false) == false) {
                   resultMsg = resultMsg + `\n${cmd} - ${commands[cmd].meta.description}`;
           }
   });

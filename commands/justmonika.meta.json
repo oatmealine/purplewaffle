@@ -1,0 +1,9 @@
+{
+    "permissions": {
+        "whitelist": false,
+        "list": []
+    },
+    "event": "message",
+    "description": "Just Monika",
+    "hidden": true
+}
