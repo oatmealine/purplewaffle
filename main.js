@@ -17,27 +17,28 @@ switch (version.symbol) {
         verSymbol = ' ';
 }
 
-console.log(`\n${'\x1b[35m'}purplewaffle ${'\x1b[2m'}v${version.ver.join('.')}${verSymbol}${'\x1b[0m'}\n`); 
+console.info(`\n${'\x1b[35m'}purplewaffle ${'\x1b[2m'}v${version.ver.join('.')}${verSymbol}${'\x1b[0m'}\n`); 
 //the weird-ass number-letter combinations are escape characters for colors.
 //ive highlighted them in ${} as theyre much harder to tell apart from the real text without chalk being loaded in yet
 //also, pretty funny how in the vscode terminal, these color escape sequences for colors work, but chalk doesnt
 //fix your vscode support chalk
 
+console.group('Initialization');
 //load config
-console.log('loading in config');
+console.info('loading in config');
 const Config = require('./config.json');
 
 //localisation!!
-console.log('loading in localisation/dialog');
+console.info('loading in localisation/dialog');
 let dialog;
 try {
     dialog = require('./dialog.json');
-} catch(err) {
+} catch (err) {
     dialog = {};
-    console.log('dialog file not found');
+    console.warn('dialog file not found');
 }
 
-console.log('loading in all required modules');
+console.info('loading in all required modules');
 const Discord = require('discord.js'); //discordjs
 const chalk = require('chalk');
 const fs = require('fs'); //filesystem module
@@ -74,26 +75,26 @@ const events = {};
 //style up logs
 
 const logInfo = (text, newline=false) => {
-    if (newline) {console.log('');}
-    console.log(chalk.blue.bold('[I] ') + text);
+    if (newline) {console.info('');}
+    console.info(chalk.blue.bold('[I] ') + text);
 };
 const logVerbose = (text, newline=false) => {
-    if (newline) {console.log('');}
-    if(process.argv.includes('--v') || process.argv.includes('--verbose')) {
-        console.log(chalk.cyan.bold('[V] ') + text);
+    if (newline) {console.info('');}
+    if (process.argv.includes('--v') || process.argv.includes('--verbose')) {
+        console.info(chalk.cyan.bold('[V] ') + text);
     }
 };
 const logSuccess = (text, newline=false) => {
-    if (newline) {console.log('');}
-    console.log(chalk.green.bold('[✔️] ') + text);
+    if (newline) {console.info('');}
+    console.info(chalk.green.bold('[✔️] ') + text);
 };
 const logWarning = (text, newline=false) => {
-    if (newline) {console.log('');}
-    console.log(chalk.yellow.bold('[W] ') + text);
+    if (newline) {console.warn('');}
+    console.warn(chalk.yellow.bold('[W] ') + text);
 };
 const logError = (text, newline=false) => {
-    if (newline) {console.log('');}
-    console.log(chalk.red.bold('[E] ') + text);
+    if (newline) {console.error('');}
+    console.error(chalk.red.bold('[E] ') + text);
 };
 
 
@@ -149,7 +150,7 @@ function processCommands() {
                 commands[cmd].meta = require(Config.commandsFolder + '/' + cmd + '.meta.json');
                 requiredCmdMetaVars.forEach((argum) => {
                     if (!Object.keys(commands[cmd].meta).includes(argum)) {
-                        if(!(argum === 'permissions' && commands[cmd].meta.event !== 'message')) {
+                        if (!(argum === 'permissions' && commands[cmd].meta.event !== 'message')) {
                             logWarning(argum + ' variable isn\'t defined in metadata file, replacing with default value');
                             commands[cmd].meta[argum] = defaultCmdMeta[argum];
                         }
@@ -195,14 +196,14 @@ patchEmitter(bot);
 
 bot.on('event', (event, ...eventargs) => {
     const ignoreEvents = ['raw', 'debug']; //events to not log in verbose
-    if(!ignoreEvents.includes(event)) logVerbose(`event: ${event}`);
+    if (!ignoreEvents.includes(event)) logVerbose(`event: ${event}`);
     let runScript = true;
     let message;
-    switch(event) {
+    switch (event) {
         case 'message':
             runScript = false; //message event has a custom script handler, so we disable running the script after it
             message = eventargs[0];
-            if(message.content.startsWith(Config.prefix)) {
+            if (message.content.startsWith(Config.prefix)) {
                 events.message.forEach((cmdName) => {
                     const cmd = commands[cmdName];
                     if (message.content.startsWith(Config.prefix + cmdName)) {
@@ -237,7 +238,7 @@ bot.on('event', (event, ...eventargs) => {
                             allowRun = false;
                         }
     
-                        if(allowRun) {
+                        if (allowRun) {
                             logVerbose(`${chalk.bold(cmdName)}: permissions match, executing command`);
                             try {
                                 commands[cmdName].module({args, message, commands, logInfo, logVerbose, bot, Config, cmdName, version, verSymbol});
@@ -263,8 +264,8 @@ bot.on('event', (event, ...eventargs) => {
             }
             break;
     }
-    if(runScript) {
-        if(Object.keys(events).includes(event)) {
+    if (runScript) {
+        if (Object.keys(events).includes(event)) {
             logInfo(`running tasks for ${event}`);
             events[event].forEach(cmdName => {
                 try {
@@ -273,8 +274,9 @@ bot.on('event', (event, ...eventargs) => {
                     logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
                 }
             });
-            if(event === 'ready') {
+            if (event === 'ready') {
                 logSuccess(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join('.')}${verSymbol}`)}`);
+                console.groupEnd('Initialization');
             }
         }
     }

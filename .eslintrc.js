@@ -8,6 +8,7 @@ module.exports = {
         "ecmaVersion": 2018
     },
     "rules": {
+        "keyword-spacing": "error",
         "no-console": "off",
         "no-var": "error",
         "prefer-const": "error",

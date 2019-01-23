@@ -5,6 +5,7 @@
   "main": "main.js",
   "dependencies": {
     "chalk": "^2.4.1",
+    "console-group": "^0.3.3",
     "discord.js": "^11.4.2"
   },
   "devDependencies": {
