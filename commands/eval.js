@@ -1,30 +1,30 @@
 module.exports = ({message, Config, cmdName}) => {
     try {
-        var code = message.content.replace(Config.prefix + cmdName, "");
-        var evaled = eval(code);
+        const code = message.content.replace(Config.prefix + cmdName, '');
+        let evaled = eval(code);
 
-        if (typeof evaled !== "string")
-            evaled = require("util").inspect(evaled);
+        if (typeof evaled !== 'string')
+            evaled = require('util').inspect(evaled);
 
-        let embed = {
-            title: "Eval",
-            color: "990000",
+        const embed = {
+            title: 'Eval',
+            color: '990000',
             fields: [{
-                    name: "Input",
-                    value: "```xl\n" + code + "\n```",
-                    inline: false
-                },
-                {
-                    name: "Output",
-                    value: "```xl\n" + evaled + "\n```",
-                    inline: false
-                }
+                name: 'Input',
+                value: '```xl\n' + code + '\n```',
+                inline: false
+            },
+            {
+                name: 'Output',
+                value: '```xl\n' + evaled + '\n```',
+                inline: false
+            }
             ]
-        }
+        };
 
-        message.channel.send("", { embed });
-        message.react("☑");
+        message.channel.send('', { embed });
+        message.react('☑');
     } catch (err) {
         message.channel.send(`:warning: \`ERROR\` \`\`\`xl\n${err.stack}\n\`\`\``);
-    };
+    }
 };

@@ -7,10 +7,14 @@
     "chalk": "^2.4.1",
     "discord.js": "^11.4.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "eslint": "^5.12.1"
+  },
   "scripts": {
     "start": "node main.js",
-    "test": "echo \"why do you even need to test this\" && exit 0"
+    "test": "echo \"why do you even need to test this\" && exit 0",
+    "lint": "eslint . --ext .js",
+    "lint-fix": "eslint . --ext .js --fix"
   },
   "repository": {
     "type": "git",

@@ -1,11 +1,11 @@
 //startupPresence
 
 module.exports = ({version, bot, Config, verSymbol}) => {
-    var presenceChange = 0;
-    var presences = [
-      {game: {name: `PurpleWaffle v${version.ver.join(".")}${verSymbol}`}},
-      {game: {name: `${Config.prefix}help`, type: 'LISTENING'}},
-      {game: {name: `https://github.com/thefoxbot/purplewaffle`, type: 'WATCHING'}}
+    let presenceChange = 0;
+    const presences = [
+        {game: {name: `PurpleWaffle v${version.ver.join('.')}${verSymbol}`}},
+        {game: {name: `${Config.prefix}help`, type: 'LISTENING'}},
+        {game: {name: 'https://github.com/thefoxbot/purplewaffle', type: 'WATCHING'}}
     ];
 
     function changePresence() {
