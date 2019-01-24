@@ -28,6 +28,10 @@ module.exports = {
         "semi": [
             "error",
             "always"
+        ],
+        "no-global-assign": [
+            "error",
+            {exceptions: ["console"]}
         ]
     }
 };

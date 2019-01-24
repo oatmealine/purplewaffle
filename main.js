@@ -17,11 +17,13 @@ switch (version.symbol) {
         verSymbol = ' ';
 }
 
-console.info(`\n${'\x1b[35m'}purplewaffle ${'\x1b[2m'}v${version.ver.join('.')}${verSymbol}${'\x1b[0m'}\n`); 
-//the weird-ass number-letter combinations are escape characters for colors.
-//ive highlighted them in ${} as theyre much harder to tell apart from the real text without chalk being loaded in yet
-//also, pretty funny how in the vscode terminal, these color escape sequences for colors work, but chalk doesnt
-//fix your vscode support chalk
+const {Console} = console;
+console = new Console({ stdout: process.stdout, stderr: process.stderr, colorMode: true });
+
+const chalk = require('chalk');
+chalk.level = 1;
+
+console.info(chalk`\n{magenta purplewaffle {bold v${version.ver.join('.')}${verSymbol}}}\n`); 
 
 console.group('Initialization');
 //load config
@@ -40,7 +42,6 @@ try {
 
 console.info('loading in all required modules');
 const Discord = require('discord.js'); //discordjs
-const chalk = require('chalk');
 const fs = require('fs'); //filesystem module
 
 const bot = new Discord.Client(); //create bot object
@@ -74,29 +75,15 @@ const events = {};
 
 //style up logs
 
-const logInfo = (text, newline=false) => {
-    if (newline) {console.info('');}
-    console.info(chalk.blue.bold('[I] ') + text);
-};
-const logVerbose = (text, newline=false) => {
-    if (newline) {console.info('');}
-    if (process.argv.includes('--v') || process.argv.includes('--verbose')) {
-        console.info(chalk.cyan.bold('[V] ') + text);
+const logInfo = (text) => console.info(chalk`{bold [I]} ${text}`);
+const logVerbose = (text) => {
+    if (process.argv.includes('-v') || process.argv.includes('--verbose')) {
+        console.error(chalk`{cyan [V]} ${text}`);
     }
 };
-const logSuccess = (text, newline=false) => {
-    if (newline) {console.info('');}
-    console.info(chalk.green.bold('[✔️] ') + text);
-};
-const logWarning = (text, newline=false) => {
-    if (newline) {console.warn('');}
-    console.warn(chalk.yellow.bold('[W] ') + text);
-};
-const logError = (text, newline=false) => {
-    if (newline) {console.error('');}
-    console.error(chalk.red.bold('[E] ') + text);
-};
-
+const logSuccess = (text) => console.error(chalk`{green [✓]} ${text}`);
+const logWarning = (text) => console.error(chalk`{yellow bold [W]} ${text}`);
+const logError = (text) => console.error(chalk`{red bold [X]} ${text}`);
 
 //check for all variables in config
 logInfo('checking for variables in config file', true);
