@@ -1,7 +1,7 @@
-//version
+// version
 const version = { ver: [0, 3, 0], symbol: 'alpha' };
 
-//this is mainly just for fanciness lol
+// this is mainly just for fanciness lol
 let verSymbol;
 switch (version.symbol) {
     case 'alpha':
@@ -17,20 +17,25 @@ switch (version.symbol) {
         verSymbol = ' ';
 }
 
-const {Console} = console;
-console = new Console({ stdout: process.stdout, stderr: process.stderr, colorMode: true });
+// style up logs
+
+require('better-logging')(console);
+
+console.success = (text) => console.info(chalk`{green ${text}}`);
+
+if (process.argv.includes('-v') || process.argv.includes('--verbose')) console.loglevel = 4;
 
 const chalk = require('chalk');
 chalk.level = 1;
 
-console.info(chalk`\n{magenta purplewaffle {bold v${version.ver.join('.')}${verSymbol}}}\n`); 
+console.line(chalk`\n{magenta purplewaffle {bold v${version.ver.join('.')}${verSymbol}}}\n`); 
 
 console.group('Initialization');
-//load config
+// load config
 console.info('loading in config');
 const Config = require('./config.json');
 
-//localisation!!
+// localisation!!
 console.info('loading in localisation/dialog');
 let dialog;
 try {
@@ -41,12 +46,12 @@ try {
 }
 
 console.info('loading in all required modules');
-const Discord = require('discord.js'); //discordjs
-const fs = require('fs'); //filesystem module
+const Discord = require('discord.js'); // discordjs
+const fs = require('fs'); // filesystem module
 
-const bot = new Discord.Client(); //create bot object
+const bot = new Discord.Client(); // create bot object
 
-//here come the variables
+// here come the variables
 const commandNamesArray = [];
 const cmddirFiles = [];
 const commands = {};
@@ -73,64 +78,52 @@ const dialogKeys = [
 
 const events = {};
 
-//style up logs
-
-const logInfo = (text) => console.info(chalk`{bold [I]} ${text}`);
-const logVerbose = (text) => {
-    if (process.argv.includes('-v') || process.argv.includes('--verbose')) {
-        console.error(chalk`{cyan [V]} ${text}`);
-    }
-};
-const logSuccess = (text) => console.error(chalk`{green [✓]} ${text}`);
-const logWarning = (text) => console.error(chalk`{yellow bold [W]} ${text}`);
-const logError = (text) => console.error(chalk`{red bold [X]} ${text}`);
-
-//check for all variables in config
-logInfo('checking for variables in config file', true);
+// check for all variables in config
+console.info('checking for variables in config file', true);
 requiredConfVariables.forEach((argum) => {
     if (!Object.keys(Config).includes(argum)) {
-        logWarning(argum + ' variable isn\'t defined in config file, purplewaffle may fail');
+        console.warn(argum + ' variable isn\'t defined in config file, purplewaffle may fail');
     }
 });
-logSuccess('done');
+console.success('done');
 
-//checking dialog.json file
-logInfo('verifying dialog file', true);
+// checking dialog.json file
+console.info('verifying dialog file', true);
 dialogKeys.forEach((key) => {
     if (!Object.keys(dialog).includes(key)) {
-        logWarning(key + ' variable isn\'t defined in dialog file, replacing with placeholder');
+        console.warn(key + ' variable isn\'t defined in dialog file, replacing with placeholder');
         dialog[key] = '${'+key+'}';
     }
 });
 
-//loading in commands
-logInfo('grabbing all scripts', true);
-logVerbose(`scripts folder: ${Config.commandsFolder}`);
+// loading in commands
+console.info('grabbing all scripts', true);
+console.debug(`scripts folder: ${Config.commandsFolder}`);
 
 fs.readdirSync(Config.commandsFolder).forEach((file) => {
     if (file.endsWith('.js')) {
         commandNamesArray.push(file.replace('.js', ''));
-        logVerbose(`${chalk.magenta('[code]')} ${file}`);
+        console.debug(`${chalk.magenta('[code]')} ${file}`);
     } else if (file.endsWith('.meta.json')) {
-        logVerbose(`${chalk.magenta('[meta]')} ${file}`);
+        console.debug(`${chalk.magenta('[meta]')} ${file}`);
     }
     cmddirFiles.push(file);
 });
 
-logSuccess('done');
+console.success('done');
 
-//time to process commands
-logInfo('processing all commands', true);
+// time to process commands
+console.info('processing all commands', true);
 
 function processCommands() {
     for (const indx in commandNamesArray) {
         const cmd = commandNamesArray[indx];
-        logVerbose(`processing: ${cmd}`);
+        console.debug(`processing: ${cmd}`);
         commands[cmd] = {};
         commands[cmd].module = require(Config.commandsFolder + '/' + cmd + '.js');
 
         if (!cmddirFiles.includes(cmd + '.meta.json')) {
-            logWarning(cmd + ' does not have a meta file, using default one');
+            console.warn(cmd + ' does not have a meta file, using default one');
             commands[cmd].meta = defaultCmdMeta;
         } else {
             try {
@@ -138,36 +131,36 @@ function processCommands() {
                 requiredCmdMetaVars.forEach((argum) => {
                     if (!Object.keys(commands[cmd].meta).includes(argum)) {
                         if (!(argum === 'permissions' && commands[cmd].meta.event !== 'message')) {
-                            logWarning(argum + ' variable isn\'t defined in metadata file, replacing with default value');
+                            console.warn(argum + ' variable isn\'t defined in metadata file, replacing with default value');
                             commands[cmd].meta[argum] = defaultCmdMeta[argum];
                         }
                     }
                 });
             } catch (err) {
-                logWarning(cmd + '\'s meta file gave an error, replacing it with default metadata - ' + err);
+                console.warn(cmd + '\'s meta file gave an error, replacing it with default metadata - ' + err);
                 commands[cmd].meta = defaultCmdMeta;
             }
         }
 
-        logVerbose('done');
+        console.debug('done');
     }
 }
 processCommands();
-logSuccess('all commands are done processing');
+console.success('all commands are done processing');
 
-//events & loading em in
-logInfo('getting list of all required events', true);
+// events & loading em in
+console.info('getting list of all required events', true);
 Object.keys(commands).forEach((cmdName) => {
     const cmd = commands[cmdName];
-    logVerbose(`${cmdName} requires ${cmd.meta.event}`);
+    console.debug(`${cmdName} requires ${cmd.meta.event}`);
     if (events[cmd.meta.event] === undefined) {
         events[cmd.meta.event] = [];
     }
     events[cmd.meta.event].push(cmdName);
 });
-logSuccess(`required events: ${Object.keys(events).join(', ')}`);
+console.success(`required events: ${Object.keys(events).join(', ')}`);
 
-//combine all client events into one
+// combine all client events into one
 function patchEmitter(emitter) {
     const oldEmit = emitter.emit.bind(emitter);
   
@@ -177,27 +170,27 @@ function patchEmitter(emitter) {
     };
 }
 
-//create main event listener
-logInfo('creating main event listener', true);
+// create main event listener
+console.info('creating main event listener', true);
 patchEmitter(bot);
 
 bot.on('event', (event, ...eventargs) => {
-    const ignoreEvents = ['raw', 'debug']; //events to not log in verbose
-    if (!ignoreEvents.includes(event)) logVerbose(`event: ${event}`);
+    const ignoreEvents = ['raw', 'debug']; // events to not log in verbose
+    if (!ignoreEvents.includes(event)) console.debug(`event: ${event}`);
     let runScript = true;
     let message;
     switch (event) {
         case 'message':
-            runScript = false; //message event has a custom script handler, so we disable running the script after it
+            runScript = false; // message event has a custom script handler, so we disable running the script after it
             message = eventargs[0];
             if (message.content.startsWith(Config.prefix)) {
                 events.message.forEach((cmdName) => {
                     const cmd = commands[cmdName];
                     if (message.content.startsWith(Config.prefix + cmdName)) {
-                        const args = message.content.split(' '); //in '.say hi, how are you' it would be ['.say', 'hi,', 'how', 'are', 'you']
+                        const args = message.content.split(' '); // in '.say hi, how are you' it would be ['.say', 'hi,', 'how', 'are', 'you']
                         let allowRun = true;
-                        logInfo(`got command ${chalk.bold(cmdName)}, processing`, true);
-                        logVerbose(`${chalk.bold(cmdName)}: verifying permissions`);
+                        console.info(`got command ${chalk.bold(cmdName)}, processing`, true);
+                        console.debug(`${chalk.bold(cmdName)}: verifying permissions`);
                         try {
                             if (cmd.meta.permissions.whitelist) {
                                 if (cmd.meta.permissions.list.includes('OWNER')) {
@@ -220,31 +213,31 @@ bot.on('event', (event, ...eventargs) => {
                                 }
                             }
                         } catch (err) {
-                            logVerbose('permission error: '+err);
+                            console.debug('permission error: '+err);
                             message.channel.send(dialog.msg_permError.replace('$1', err.stack));
                             allowRun = false;
                         }
     
                         if (allowRun) {
-                            logVerbose(`${chalk.bold(cmdName)}: permissions match, executing command`);
+                            console.debug(`${chalk.bold(cmdName)}: permissions match, executing command`);
                             try {
-                                commands[cmdName].module({args, message, commands, logInfo, logVerbose, bot, Config, cmdName, version, verSymbol});
+                                commands[cmdName].module({args, message, commands, bot, Config, cmdName, version, verSymbol});
                             } catch (err) {
                                 message.channel.send(dialog.msg_runtimeError.replace('$1', cmdName).replace('$2', err.stack));
-                                logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
+                                console.error(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
                             }
                         } else {
-                            logVerbose(`${chalk.bold(cmdName)}: permissions don't match, aborting command`);
+                            console.debug(`${chalk.bold(cmdName)}: permissions don't match, aborting command`);
                         }
-                        logInfo(`${chalk.bold(cmdName)}: processed`);
+                        console.info(`${chalk.bold(cmdName)}: processed`);
                     }
                 });
             }
             break;
         case 'ready':
-            logSuccess('logged in!');
+            console.success('logged in!');
             if (Config.ownerid == undefined || Config.ownerid == '') {
-                logInfo('ownerid not defined on config.json, getting from application owner');
+                console.info('ownerid not defined on config.json, getting from application owner');
                 bot.fetchApplication().then(app => {
                     Config.ownerid = app.owner.id;
                 });
@@ -253,22 +246,22 @@ bot.on('event', (event, ...eventargs) => {
     }
     if (runScript) {
         if (Object.keys(events).includes(event)) {
-            logInfo(`running tasks for ${event}`);
+            console.info(`running tasks for ${event}`);
             events[event].forEach(cmdName => {
                 try {
-                    commands[cmdName].module({commands, logInfo, logVerbose, bot, Config, version, verSymbol, eventargs});
+                    commands[cmdName].module({commands, bot, Config, version, verSymbol, eventargs});
                 } catch (err) {
-                    logError(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
+                    console.error(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
                 }
             });
             if (event === 'ready') {
-                logSuccess(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join('.')}${verSymbol}`)}`);
+                console.success(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join('.')}${verSymbol}`)}`);
                 console.groupEnd('Initialization');
             }
         }
     }
 });
-logSuccess('done');
+console.success('done');
 
-logInfo('logging in...', true);
-bot.login(Config.token); //login and hope nothing explodes
+console.info('logging in...', true);
+bot.login(Config.token); // login and hope nothing explodes

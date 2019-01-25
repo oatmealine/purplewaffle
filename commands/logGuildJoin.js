@@ -1,1 +1,1 @@
-module.exports = ({logInfo, eventargs}) => logInfo(`joined guild ${eventargs[0].name}`);
+module.exports = ({eventargs}) => console.info(`joined guild ${eventargs[0].name}`);

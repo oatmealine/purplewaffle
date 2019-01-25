@@ -4,6 +4,7 @@
   "description": "a discord.js command system, aiming for flexibility and simplicity",
   "main": "main.js",
   "dependencies": {
+    "better-logging": "^3.0.1",
     "chalk": "^2.4.1",
     "console-group": "^0.3.3",
     "discord.js": "^11.4.2"

@@ -1,4 +1,4 @@
-//startupPresence
+// startupPresence
 
 module.exports = ({version, bot, Config, verSymbol}) => {
     let presenceChange = 0;

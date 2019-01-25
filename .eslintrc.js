@@ -32,6 +32,7 @@ module.exports = {
         "no-global-assign": [
             "error",
             {exceptions: ["console"]}
-        ]
+        ],
+        "spaced-comment": ["error", "always"]
     }
 };

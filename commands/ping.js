@@ -1,4 +1,4 @@
-//ping
+// ping
 
 module.exports = async ({message}) => {
     const pingStartDate = Date.now();

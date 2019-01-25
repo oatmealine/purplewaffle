@@ -1,4 +1,4 @@
-//example help command
+// example help command
 
 module.exports = ({commands, message}) => {
     let resultMsg = '';
