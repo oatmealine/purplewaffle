@@ -61,12 +61,16 @@ const defaultCmdMeta = {
         'whitelist': false,
         'list': []
     },
+    'clientPermissions': {
+        'whitelist': false,
+        'list': []
+    },
     'event': 'message',
     'description': 'No description provided'
 };
 
 const requiredConfVariables = ['token', 'commandsFolder', 'prefix'];
-const requiredCmdMetaVars = ['permissions', 'event', 'description'];
+const requiredCmdMetaVars = ['permissions', 'clientPermissions', 'event', 'description'];
 const dialogKeys = [
     'msg_userNoPerms',
     'msg_botNoPerms',
