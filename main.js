@@ -174,6 +174,21 @@ function patchEmitter(emitter) {
     };
 }
 
+function splitArguments(string) {
+    const regex = /[^\s"']+|(?:"((?:[^"\\]|\\")*)"|'((?:[^'\\]|\\')*)')+(?: |$)/gi;
+    const arr = [];
+    let match = null;
+
+    do {
+        match = regex.exec(string);
+        if (match != null) {
+            arr.push((match[1] || match[2]) ? ((match[1] || '') + (match[2] || '')).replace(/\\(?=["'])/g, '') : match[0]);
+        }
+    } while (match != null);
+	
+    return arr;
+}
+
 // create main event listener
 console.info('creating main event listener', true);
 patchEmitter(bot);
@@ -191,7 +206,7 @@ bot.on('event', (event, ...eventargs) => {
                 events.message.forEach((cmdName) => {
                     const cmd = commands[cmdName];
                     if (message.content.startsWith(Config.prefix + cmdName)) {
-                        const args = message.content.split(' '); // in '.say hi, how are you' it would be ['.say', 'hi,', 'how', 'are', 'you']
+                        const args = splitArguments(message.content); // in `.say 'hi, how' "are you"` it would be ['.say', 'hi, how', 'are you']
                         let allowRun = true;
                         console.info(`got command ${chalk.bold(cmdName)}, processing`, true);
                         console.debug(`${chalk.bold(cmdName)}: verifying permissions`);

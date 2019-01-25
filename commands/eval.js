@@ -1,4 +1,6 @@
-module.exports = ({message, Config, cmdName}) => {
+/* eslint no-unused-vars: "off" */
+
+module.exports = ({message, Config, cmdName, args}) => {
     try {
         const code = message.content.replace(Config.prefix + cmdName, '');
         let evaled = eval(code);
