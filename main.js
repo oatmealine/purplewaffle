@@ -140,7 +140,7 @@ function processCommands() {
                 commands[cmd].meta = require(Config.commandsFolder + '/' + cmd + '.meta.json');
                 requiredCmdMetaVars.forEach((argum) => {
                     if (!Object.keys(commands[cmd].meta).includes(argum)) {
-                        if (!((argum === 'permissions' || argum === "clientPermissions") && commands[cmd].meta.event !== 'message')) {
+                        if (!((argum === 'permissions' || argum === 'clientPermissions') && commands[cmd].meta.event !== 'message')) {
                             console.warn(argum + ' variable isn\'t defined in metadata file, replacing with default value');
                             commands[cmd].meta[argum] = defaultCmdMeta[argum];
                         }
@@ -211,23 +211,23 @@ bot.on('event', (event, ...eventargs) => {
             message = eventargs[0];
             if (message.content.startsWith(Config.prefix)) {
                 if (Config.blacklist.includes(Number(message.author.id))) return;
-                if (message.content === Config.prefix + "reload" && Config.ownerid === message.author.id) { // this command is hardcoded because it uses a lot of internal functions
+                if (message.content === Config.prefix + 'reload' && Config.ownerid === message.author.id) { // this command is hardcoded because it uses a lot of internal functions
                     message.channel.send('reloading commands...\nreloading config...\nreloading dialog...').then(reloadmsg => {
                         processCommands();
-                        reloadmsg.edit(reloadmsg.content.replace('...','.. done'))
+                        reloadmsg.edit(reloadmsg.content.replace('...','.. done'));
                         setTimeout(() => {
                             Config = require('./config.json');
-                            reloadmsg.edit(reloadmsg.content.replace('...','.. done'))
-                        }, 1000)
+                            reloadmsg.edit(reloadmsg.content.replace('...','.. done'));
+                        }, 1000);
                         setTimeout(() => {
                             try {
                                 dialog = require('./dialog.json');
                                 reloadmsg.edit(reloadmsg.content.replace('...','.. done'));
-                            } catch(err) {
+                            } catch (err) {
                                 reloadmsg.edit(reloadmsg.content.replace('...','.. failed'));
                             }
-                        }, 2000)
-                    })
+                        }, 2000);
+                    });
                 }
                 events.message.forEach((cmdName) => {
                     const cmd = commands[cmdName];
@@ -299,26 +299,26 @@ console.groupEnd('events');
 console.info('logging in...');
 bot.login(Config.token); // login and hope nothing explodes
 
-//destroy the bot process onexit
+// destroy the bot process onexit
 function cleanup(code) {
-    if (code !== 0) console.error("Please report this error to the Purplewaffle GitHub page!");
+    if (code !== 0) console.error('Please report this error to the Purplewaffle GitHub page!');
     bot.destroy();
-    console.log("Goodbye!");
+    console.log('Goodbye!');
     process.exit();
 }
 
 process.on('exit', cleanup);
 
-//catches ctrl+c event
-process.on('SIGINT', ()=>{process.exit(0)});
+// catches ctrl+c event
+process.on('SIGINT', ()=>{process.exit(0);});
 
 // catches "kill pid" (for example: nodemon restart)
-process.on('SIGUSR1', ()=>{process.exit(0)});
-process.on('SIGUSR2', ()=>{process.exit(0)});
+process.on('SIGUSR1', ()=>{process.exit(0);});
+process.on('SIGUSR2', ()=>{process.exit(0);});
 
-//catches uncaught exceptions
+// catches uncaught exceptions
 process.on('uncaughtException', (err)=>{
-    if (err.fileName === "main.js") {
+    if (err.fileName === 'main.js') {
         console.error('PurpleWaffle error encountered!');
         console.error(err.stack);
         process.exit(1);
