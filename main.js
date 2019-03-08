@@ -68,6 +68,7 @@ const defaultCmdMeta = {
     'event': 'message',
     'description': 'No description provided'
 };
+const defaultConfig = require('./config.example.json');
 
 const requiredConfVariables = ['token', 'commandsFolder', 'prefix'];
 const requiredCmdMetaVars = ['permissions', 'clientPermissions', 'event', 'description'];
@@ -86,7 +87,8 @@ const events = {};
 console.info('checking for variables in config file', true);
 requiredConfVariables.forEach((argum) => {
     if (!Object.keys(Config).includes(argum)) {
-        console.warn(argum + ' variable isn\'t defined in config file, purplewaffle may fail');
+        console.warn(argum + ' variable isn\'t defined in config file, replacing with default config (purplewaffle may fail)');
+        Config[argum] = defaultConfig[argum];
     }
 });
 console.success('done');
@@ -203,6 +205,7 @@ bot.on('event', (event, ...eventargs) => {
             runScript = false; // message event has a custom script handler, so we disable running the script after it
             message = eventargs[0];
             if (message.content.startsWith(Config.prefix)) {
+                if (Config.blacklist.includes(message.author.id)) return;
                 events.message.forEach((cmdName) => {
                     const cmd = commands[cmdName];
                     if (message.content.startsWith(Config.prefix + cmdName)) {

@@ -2,5 +2,8 @@
     "token": "",
     "commandsFolder": "./commands",
     "ownerid": "",
-    "prefix": ""
+    "prefix": "",
+    "blacklist": [
+        
+    ]
 }
