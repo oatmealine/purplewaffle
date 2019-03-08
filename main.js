@@ -70,7 +70,7 @@ const defaultCmdMeta = {
 };
 const defaultConfig = require('./config.example.json');
 
-const requiredConfVariables = ['token', 'commandsFolder', 'prefix'];
+const requiredConfVariables = ['token', 'commandsFolder', 'prefix', 'blacklist'];
 const requiredCmdMetaVars = ['permissions', 'clientPermissions', 'event', 'description'];
 const dialogKeys = [
     'msg_userNoPerms',
@@ -198,11 +198,9 @@ patchEmitter(bot);
 bot.on('event', (event, ...eventargs) => {
     const ignoreEvents = ['raw', 'debug']; // events to not log in verbose
     if (!ignoreEvents.includes(event)) console.debug(`event: ${event}`);
-    let runScript = true;
     let message;
     switch (event) {
         case 'message':
-            runScript = false; // message event has a custom script handler, so we disable running the script after it
             message = eventargs[0];
             if (message.content.startsWith(Config.prefix)) {
                 if (Config.blacklist.includes(message.author.id)) return;
@@ -210,52 +208,41 @@ bot.on('event', (event, ...eventargs) => {
                     const cmd = commands[cmdName];
                     if (message.content.startsWith(Config.prefix + cmdName)) {
                         const args = splitArguments(message.content); // in `.say 'hi, how' "are you"` it would be ['.say', 'hi, how', 'are you']
-                        let allowRun = true;
                         console.info(`got command ${chalk.bold(cmdName)}, processing`, true);
                         console.debug(`${chalk.bold(cmdName)}: verifying permissions`);
                         try {
                             if (cmd.meta.permissions.whitelist) {
                                 if (cmd.meta.permissions.list.includes('OWNER')) {
-                                    if (Config.ownerid === message.author.id) {
-                                        allowRun = true;
-                                    } else {
+                                    if (Config.ownerid !== message.author.id) {
                                         throw new Error(dialog.msg_ownerOnly);
                                     }
                                 } else {
-                                    if (message.member.hasPermission(cmd.meta.permissions.list)) {
-                                        allowRun = true;
-                                    } else {
+                                    if (!message.member.hasPermission(cmd.meta.permissions.list)) {
                                         throw new Error(dialog.msg_userNoPerms.replace('$1', cmd.meta.permissions.list.join(', ')));
                                     }
                                 }
-                                if (message.channel.permissionsFor(bot.user.id).has(cmd.meta.clientPermissions.list)) {
-                                    allowRun = true;
-                                } else {
+                                if (!message.channel.permissionsFor(bot.user.id).has(cmd.meta.clientPermissions.list)) {
                                     throw new Error(dialog.msg_botNoPerms.replace('$1', cmd.meta.clientPermissions.list.join(', ')));
                                 }
                             }
                         } catch (err) {
                             console.debug('permission error: '+err);
                             message.channel.send(dialog.msg_permError.replace('$1', err.stack));
-                            allowRun = false;
+                            return;
                         }
     
-                        if (allowRun) {
-                            console.debug(`${chalk.bold(cmdName)}: permissions match, executing command`);
-                            try {
-                                commands[cmdName].module({args, message, commands, bot, Config, cmdName, version, verSymbol});
-                            } catch (err) {
-                                message.channel.send(dialog.msg_runtimeError.replace('$1', cmdName).replace('$2', err.stack));
-                                console.error(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
-                            }
-                        } else {
-                            console.debug(`${chalk.bold(cmdName)}: permissions don't match, aborting command`);
+                        console.debug(`${chalk.bold(cmdName)}: permissions match, executing command`);
+                        try {
+                            commands[cmdName].module({args, message, commands, bot, Config, cmdName, version, verSymbol});
+                        } catch (err) {
+                            message.channel.send(dialog.msg_runtimeError.replace('$1', cmdName).replace('$2', err.stack));
+                            console.error(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
                         }
-                        console.info(`${chalk.bold(cmdName)}: processed`);
                     }
+                    console.info(`${chalk.bold(cmdName)}: processed`);
                 });
             }
-            break;
+            return;
         case 'ready':
             console.success('logged in!');
             if (Config.ownerid == undefined || Config.ownerid == '') {
@@ -266,20 +253,18 @@ bot.on('event', (event, ...eventargs) => {
             }
             break;
     }
-    if (runScript) {
-        if (Object.keys(events).includes(event)) {
-            console.info(`running tasks for ${event}`);
-            events[event].forEach(cmdName => {
-                try {
-                    commands[cmdName].module({commands, bot, Config, version, verSymbol, eventargs});
-                } catch (err) {
-                    console.error(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
-                }
-            });
-            if (event === 'ready') {
-                console.success(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join('.')}${verSymbol}`)}`);
-                console.groupEnd('Initialization');
+    if (Object.keys(events).includes(event) && event !== 'message') {
+        console.info(`running tasks for ${event}`);
+        events[event].forEach(cmdName => {
+            try {
+                commands[cmdName].module({commands, bot, Config, version, verSymbol, eventargs});
+            } catch (err) {
+                console.error(`${chalk.bold(cmdName)}: runtime error: ${chalk.red(err.stack)}`);
             }
+        });
+        if (event === 'ready') {
+            console.success(`bot is ready!\n${chalk.white.bold(`Thank you for using Purplewaffle v${version.ver.join('.')}${verSymbol}`)}`);
+            console.groupEnd('Initialization');
         }
     }
 });
