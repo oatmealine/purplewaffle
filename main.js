@@ -203,7 +203,7 @@ bot.on('event', (event, ...eventargs) => {
         case 'message':
             message = eventargs[0];
             if (message.content.startsWith(Config.prefix)) {
-                if (Config.blacklist.includes(message.author.id)) return;
+                if (Config.blacklist.includes(Number(message.author.id))) return;
                 events.message.forEach((cmdName) => {
                     const cmd = commands[cmdName];
                     if (message.content.startsWith(Config.prefix + cmdName)) {
