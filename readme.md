@@ -50,6 +50,10 @@ you can use any other value defined in main.js, too (example in help.js)
         "whitelist": false, //whether you want the command to be only executable by permissions in the list below
         "list": [] //the list of permissions able to execute the command (d.js permissions and OWNER for owner-only)
     },
+    "clientPermissions": { //same as permissions, except permissions the bot needs to execute the command
+        "whitelist": false,
+        "list": ["SEND_MESSAGES"]
+    },
     "event": "message", //what event to add the script to
     "description": "evaluate a piece of code" //the description (used in help.js)
 }
