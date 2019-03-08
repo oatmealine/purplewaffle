@@ -272,3 +272,23 @@ console.success('done');
 
 console.info('logging in...', true);
 bot.login(Config.token); // login and hope nothing explodes
+
+//destroy the bot process onexit
+function cleanup(code) {
+    if (code !== 0) console.error("Please report this error to the Purplewaffle GitHub page!");
+    bot.destroy();
+    console.log("Goodbye!");
+    process.exit();
+}
+
+process.on('exit', cleanup);
+
+//catches ctrl+c event
+process.on('SIGINT', ()=>{process.exit(0)});
+
+// catches "kill pid" (for example: nodemon restart)
+process.on('SIGUSR1', ()=>{process.exit(0)});
+process.on('SIGUSR2', ()=>{process.exit(0)});
+
+//catches uncaught exceptions
+process.on('uncaughtException', ()=>{process.exit(1)});
